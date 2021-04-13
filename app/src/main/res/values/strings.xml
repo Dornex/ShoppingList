@@ -3,4 +3,7 @@
     <string name="quantity">Quantity:</string>
     <string name="apple">Apple</string>
     <string name="smallicon">smallIcon</string>
+    <string name="facebook_app_id">899841490793226</string>
+    <string name="fb_login_protocol_scheme">fb899841490793226</string>
+    <string name="shopping_list_app">Shopping List App</string>
 </resources>

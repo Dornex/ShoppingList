@@ -1,46 +1,45 @@
 package com.eduard.shoppinglist;
 
 import android.os.Bundle;
-
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 
 public class MainActivity extends AppCompatActivity {
-    private ArrayList<ShoppingListItem> shoppingList = new ArrayList<>();
-    private RecyclerView recycler;
-    private ShoppingListAdapter adapter;
+
+    private TextView info;
+    private LoginButton login;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        recycler = findViewById(R.id.recycler_view);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        recycler.setLayoutManager(layoutManager);
-        adapter = new ShoppingListAdapter(shoppingList, this);
-        recycler.setAdapter(adapter);
+        login = findViewById(R.id.facebook_login);
 
-        shoppingList.add(new ShoppingListItem("Banana", 10, false));
-        shoppingList.add(new ShoppingListItem("Apple", 5, true));
-        shoppingList.add(new ShoppingListItem("Apple", 5, true));
-        shoppingList.add(new ShoppingListItem("Apple", 5, true));
-        shoppingList.add(new ShoppingListItem("Apple", 5, true));
-        shoppingList.add(new ShoppingListItem("Apple", 5, true));
-        shoppingList.add(new ShoppingListItem("Apple", 5, true));
-        shoppingList.add(new ShoppingListItem("Apple", 5, true));
-        shoppingList.add(new ShoppingListItem("Apple", 5, true));
-        shoppingList.add(new ShoppingListItem("Apple", 5, true));
-        shoppingList.add(new ShoppingListItem("Apple", 5, true));
-        shoppingList.add(new ShoppingListItem("Apple", 5, true));
-        shoppingList.add(new ShoppingListItem("Apple", 5, true));
-        shoppingList.add(new ShoppingListItem("Apple", 5, true));
+        CallbackManager callbackManager = CallbackManager.Factory.create();
 
-        adapter.notifyDataSetChanged();
+        login.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+            }
+
+            @Override
+            public void onCancel() {
+
+            }
+
+            @Override
+            public void onError(FacebookException error) {
+
+            }
+        });
     }
 }

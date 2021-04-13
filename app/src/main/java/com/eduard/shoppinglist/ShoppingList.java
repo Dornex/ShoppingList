@@ -29,7 +29,7 @@ public class ShoppingList extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.shopping_list);
         listView = findViewById(R.id.recycler_view);
         arrayAdapter = new ArrayAdapter(ShoppingList.this, android.R.layout.simple_list_item_1, shoppingList);
         listView.setAdapter(arrayAdapter);
