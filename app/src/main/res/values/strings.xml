@@ -6,4 +6,7 @@
     <string name="facebook_app_id">899841490793226</string>
     <string name="fb_login_protocol_scheme">fb899841490793226</string>
     <string name="shopping_list_app">Shopping List App</string>
+    <string name="login_shared_pref">login_shared_pref</string>
+    <string name="login_state">login_state</string>
+    <string name="login_username">login_username</string>
 </resources>
