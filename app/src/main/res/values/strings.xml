@@ -9,4 +9,6 @@
     <string name="login_shared_pref">login_shared_pref</string>
     <string name="login_state">login_state</string>
     <string name="login_username">login_username</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
 </resources>
