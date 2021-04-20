@@ -91,9 +91,12 @@ public class ShoppingListFragment extends Fragment {
                             });
 
                             builder.show();
-                        } else {
+                        } else if(item.getItemId() == R.id.item_delete) {
                             Toast.makeText(rootView.getContext(), "Item deleted", Toast.LENGTH_SHORT).show();
                             shoppingList.remove(position);
+                            adapter.notifyDataSetChanged();
+                        } else if(item.getItemId() == R.id.flip_item) {
+                            shoppingList.get(position).setCompleted(!shoppingList.get(position).isCompleted());
                             adapter.notifyDataSetChanged();
                         }
                         return false;
