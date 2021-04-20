@@ -11,11 +11,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,17 +21,19 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
 public class ShoppingListFragment extends Fragment {
     private TextView title;
     private SharedPreferences sharedPreferences;
-    private ArrayList<String> shoppingList = new ArrayList<>();
-    private ListView listView;
-    private ArrayAdapter arrayAdapter;
+    private ArrayList<ShoppingListItem> shoppingList = new ArrayList<>();
+    private RecyclerView recyclerView;
     private View rootView;
     private Button button;
+    private ShoppingListAdapter adapter;
 
     @Nullable
     @Override
@@ -43,47 +42,43 @@ public class ShoppingListFragment extends Fragment {
         setHasOptionsMenu(true);
         rootView = inflater.inflate(R.layout.fragment_shopping_list, container, false);
 
-        listView = rootView.findViewById(R.id.shopping_list_view);
-        arrayAdapter = new ArrayAdapter(rootView.getContext(), android.R.layout.simple_list_item_1, shoppingList);
-        listView.setAdapter(arrayAdapter);
+        recyclerView = rootView.findViewById(R.id.shopping_list_view);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(layoutManager);
+        adapter = new ShoppingListAdapter(shoppingList, getContext());
 
-        button = rootView.findViewById(R.id.fragment_shopping_list_button);
-        button.setOnClickListener(new View.OnClickListener() {
+        adapter.setOnItemClickListener(new ShoppingListAdapter.ClickListener() {
             @Override
-            public void onClick(View v) {
-                _addItem();
-            }
-        });
-
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                PopupMenu popupMenu = new PopupMenu(rootView.getContext(), view);
+            public void onItemClick(int position, View v) {
+                PopupMenu popupMenu = new PopupMenu(rootView.getContext(), v);
                 popupMenu.getMenuInflater().inflate(R.menu.pop_up_menu, popupMenu.getMenu());
 
                 popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
-                        if(item.getItemId() == R.id.item_update) {
+                        if (item.getItemId() == R.id.item_update) {
                             AlertDialog.Builder builder = new AlertDialog.Builder(rootView.getContext());
                             View view = LayoutInflater.from(rootView.getContext()).inflate(R.layout.item_dialog, null, false);
 
                             builder.setTitle("Update Item");
-                            EditText editText = view.findViewById(R.id.editText);
+                            EditText editProductName = view.findViewById(R.id.edit_product_name);
+                            EditText editProductQuantity = view.findViewById(R.id.edit_product_quantity);
 
-                            editText.setText(shoppingList.get(position));
+                            editProductName.setText(shoppingList.get(position).getName());
+                            editProductQuantity.setText(String.valueOf(shoppingList.get(position).getQuantity()));
 
                             builder.setView(view);
 
                             builder.setPositiveButton("Update", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    if(!editText.getText().toString().isEmpty()) {
-                                        shoppingList.set(position, editText.getText().toString().trim());
-                                        arrayAdapter.notifyDataSetChanged();
+                                    if (!editProductName.getText().toString().isEmpty() && !editProductQuantity.getText().toString().isEmpty()) {
+                                        shoppingList.get(position).setName(editProductName.getText().toString().trim());
+                                        shoppingList.get(position).setQuantity(Integer.parseInt(editProductQuantity.getText().toString().trim()));
+                                        adapter.notifyDataSetChanged();
                                         Toast.makeText(rootView.getContext(), "Item updated!", Toast.LENGTH_SHORT).show();
                                     } else {
-                                        editText.setError("Add item here!");
+                                        editProductName.setError("Add item here!");
                                     }
                                 }
                             });
@@ -99,13 +94,28 @@ public class ShoppingListFragment extends Fragment {
                         } else {
                             Toast.makeText(rootView.getContext(), "Item deleted", Toast.LENGTH_SHORT).show();
                             shoppingList.remove(position);
-                            arrayAdapter.notifyDataSetChanged();
+                            adapter.notifyDataSetChanged();
                         }
                         return false;
                     }
                 });
 
                 popupMenu.show();
+            }
+
+            @Override
+            public void onItemLongClick(int position, View v) {
+
+            }
+        });
+
+        recyclerView.setAdapter(adapter);
+
+        button = rootView.findViewById(R.id.fragment_shopping_list_button);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                _addItem();
             }
         });
 
@@ -124,7 +134,7 @@ public class ShoppingListFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch(item.getItemId()) {
+        switch (item.getItemId()) {
             case R.id.add_item:
                 _addItem();
                 break;
@@ -139,17 +149,19 @@ public class ShoppingListFragment extends Fragment {
 
         View view = LayoutInflater.from(rootView.getContext()).inflate(R.layout.item_dialog, null, false);
         builder.setView(view);
-        final EditText editText = view.findViewById(R.id.editText);
+
+        EditText editProductName = view.findViewById(R.id.edit_product_name);
+        EditText editProductQuantity = view.findViewById(R.id.edit_product_quantity);
 
         builder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                if (!editText.getText().toString().isEmpty()) {
-                    shoppingList.add(editText.getText().toString().trim());
-                    arrayAdapter.notifyDataSetChanged();
-                    Log.i("MyActivity", shoppingList.get(0));
+                if (!editProductName.getText().toString().isEmpty() && !editProductQuantity.getText().toString().isEmpty()) {
+                    ShoppingListItem listItem = new ShoppingListItem(editProductName.getText().toString().trim(), Integer.parseInt(editProductQuantity.getText().toString().trim()), false);
+                    shoppingList.add(listItem);
+                    adapter.notifyDataSetChanged();
                 } else {
-                    editText.setError("Add item here!");
+                    editProductName.setError("Add item here!");
                 }
             }
         });

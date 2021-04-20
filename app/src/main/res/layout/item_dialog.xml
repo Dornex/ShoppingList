@@ -1,11 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:orientation="vertical" android:layout_width="match_parent" android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android">
-        <EditText
-            android:id="@+id/editText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:layout_margin="4dp"
-            android:hint="add item" />
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <EditText
+        android:id="@+id/edit_product_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        android:hint="Add product name"
+        android:padding="10dp" />
+
+    <EditText
+        android:id="@+id/edit_product_quantity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        android:hint="Add quantity"
+        android:inputType="number"
+        android:padding="10dp" />
 </LinearLayout>

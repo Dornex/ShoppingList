@@ -18,7 +18,7 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
     // List to store all the contact details
     private ArrayList<ShoppingListItem> shoppingList;
     private Context mContext;
-    private AdapterView.OnItemClickListener mListener;
+    private static ClickListener clickListener;
 
     // Counstructor for the Class
     public ShoppingListAdapter(ArrayList<ShoppingListItem> list, Context context) {
@@ -35,6 +35,11 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
         // Inflate the layout view you have created for the list rows here
         View view = layoutInflater.inflate(R.layout.shopping_list_item_row, parent, false);
         return new ShoppingListHolder(view);
+    }
+
+    public interface ClickListener {
+        void onItemClick(int position, View v);
+        void onItemLongClick(int position, View v);
     }
 
     @Override
@@ -57,16 +62,21 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
     }
 
     // This is your ViewHolder class that helps to populate data to the view
-    public class ShoppingListHolder extends RecyclerView.ViewHolder {
+    public class ShoppingListHolder extends RecyclerView.ViewHolder implements  View.OnClickListener{
 
         private TextView txtName;
         private TextView txtQuantity;
 
         public ShoppingListHolder(View itemView) {
             super(itemView);
-
+            itemView.setOnClickListener(this);
             txtName = itemView.findViewById(R.id.shopping_list_item_name);
             txtQuantity = itemView.findViewById(R.id.shopping_list_item_quantity);
+        }
+
+        @Override
+        public void onClick(View v) {
+            clickListener.onItemClick(getAdapterPosition(), v);
         }
 
         public void setContactName(String name) {
@@ -76,5 +86,9 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
         public void setContactNumber(int number) {
             txtQuantity.setText(String.valueOf(number));
         }
+    }
+
+    public void setOnItemClickListener(ClickListener clickListener) {
+        ShoppingListAdapter.clickListener = clickListener;
     }
 }
