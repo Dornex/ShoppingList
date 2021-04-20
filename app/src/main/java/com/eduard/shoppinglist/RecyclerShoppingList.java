@@ -19,28 +19,28 @@ public class RecyclerShoppingList extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.shopping_list);
-
-        recycler = findViewById(R.id.recycler_view);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        recycler.setLayoutManager(layoutManager);
-        adapter = new ShoppingListAdapter(shoppingList, this);
-        recycler.setAdapter(adapter);
-
-        shoppingList.add(new ShoppingListItem("Banana", 10, false));
-        shoppingList.add(new ShoppingListItem("Apple", 5, true));
-        shoppingList.add(new ShoppingListItem("Apple", 5, true));
-        shoppingList.add(new ShoppingListItem("Apple", 5, true));
-        shoppingList.add(new ShoppingListItem("Apple", 5, true));
-        shoppingList.add(new ShoppingListItem("Apple", 5, true));
-        shoppingList.add(new ShoppingListItem("Apple", 5, true));
-        shoppingList.add(new ShoppingListItem("Apple", 5, true));
-        shoppingList.add(new ShoppingListItem("Apple", 5, true));
-        shoppingList.add(new ShoppingListItem("Apple", 5, true));
-        shoppingList.add(new ShoppingListItem("Apple", 5, true));
-        shoppingList.add(new ShoppingListItem("Apple", 5, true));
-        shoppingList.add(new ShoppingListItem("Apple", 5, true));
-        shoppingList.add(new ShoppingListItem("Apple", 5, true));
-
-        adapter.notifyDataSetChanged();
+//
+//        recycler = findViewById(R.id.recycler_view);
+//        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+//        recycler.setLayoutManager(layoutManager);
+//        adapter = new ShoppingListAdapter(shoppingList, this);
+//        recycler.setAdapter(adapter);
+//
+//        shoppingList.add(new ShoppingListItem("Banana", 10, false));
+//        shoppingList.add(new ShoppingListItem("Apple", 5, true));
+//        shoppingList.add(new ShoppingListItem("Apple", 5, true));
+//        shoppingList.add(new ShoppingListItem("Apple", 5, true));
+//        shoppingList.add(new ShoppingListItem("Apple", 5, true));
+//        shoppingList.add(new ShoppingListItem("Apple", 5, true));
+//        shoppingList.add(new ShoppingListItem("Apple", 5, true));
+//        shoppingList.add(new ShoppingListItem("Apple", 5, true));
+//        shoppingList.add(new ShoppingListItem("Apple", 5, true));
+//        shoppingList.add(new ShoppingListItem("Apple", 5, true));
+//        shoppingList.add(new ShoppingListItem("Apple", 5, true));
+//        shoppingList.add(new ShoppingListItem("Apple", 5, true));
+//        shoppingList.add(new ShoppingListItem("Apple", 5, true));
+//        shoppingList.add(new ShoppingListItem("Apple", 5, true));
+//
+//        adapter.notifyDataSetChanged();
     }
 }

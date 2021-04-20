@@ -1,52 +1,72 @@
 package com.eduard.shoppinglist;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.PopupMenu;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.Fragment;
 
 import java.util.ArrayList;
 
-public class ShoppingList extends AppCompatActivity {
+public class ShoppingListFragment extends Fragment {
+    private TextView title;
+    private SharedPreferences sharedPreferences;
+    private ArrayList<String> shoppingList = new ArrayList<>();
+    private ListView listView;
+    private ArrayAdapter arrayAdapter;
+    private View rootView;
+    private Button button;
 
-    ArrayList<String> shoppingList = new ArrayList<>();
-    ListView listView;
-    ArrayAdapter arrayAdapter;
-
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.shopping_list);
+        setHasOptionsMenu(true);
+        rootView = inflater.inflate(R.layout.fragment_shopping_list, container, false);
 
-        listView = findViewById(R.id.shopping_list_view);
-        arrayAdapter = new ArrayAdapter(ShoppingList.this, android.R.layout.simple_list_item_1, shoppingList);
+        listView = rootView.findViewById(R.id.shopping_list_view);
+        arrayAdapter = new ArrayAdapter(rootView.getContext(), android.R.layout.simple_list_item_1, shoppingList);
         listView.setAdapter(arrayAdapter);
+
+        button = rootView.findViewById(R.id.fragment_shopping_list_button);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                _addItem();
+            }
+        });
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                PopupMenu popupMenu = new PopupMenu(ShoppingList.this, view);
+                PopupMenu popupMenu = new PopupMenu(rootView.getContext(), view);
                 popupMenu.getMenuInflater().inflate(R.menu.pop_up_menu, popupMenu.getMenu());
 
                 popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
                         if(item.getItemId() == R.id.item_update) {
-                            AlertDialog.Builder builder = new AlertDialog.Builder(ShoppingList.this);
-                            View view = LayoutInflater.from(ShoppingList.this).inflate(R.layout.item_dialog, null, false);
+                            AlertDialog.Builder builder = new AlertDialog.Builder(rootView.getContext());
+                            View view = LayoutInflater.from(rootView.getContext()).inflate(R.layout.item_dialog, null, false);
 
                             builder.setTitle("Update Item");
                             EditText editText = view.findViewById(R.id.editText);
@@ -61,7 +81,7 @@ public class ShoppingList extends AppCompatActivity {
                                     if(!editText.getText().toString().isEmpty()) {
                                         shoppingList.set(position, editText.getText().toString().trim());
                                         arrayAdapter.notifyDataSetChanged();
-                                        Toast.makeText(ShoppingList.this, "Item updated!", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(rootView.getContext(), "Item updated!", Toast.LENGTH_SHORT).show();
                                     } else {
                                         editText.setError("Add item here!");
                                     }
@@ -77,7 +97,7 @@ public class ShoppingList extends AppCompatActivity {
 
                             builder.show();
                         } else {
-                            Toast.makeText(ShoppingList.this, "Item deleted", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(rootView.getContext(), "Item deleted", Toast.LENGTH_SHORT).show();
                             shoppingList.remove(position);
                             arrayAdapter.notifyDataSetChanged();
                         }
@@ -88,12 +108,18 @@ public class ShoppingList extends AppCompatActivity {
                 popupMenu.show();
             }
         });
+
+        sharedPreferences = getActivity().getSharedPreferences(getString(R.string.login_shared_pref), Context.MODE_PRIVATE);
+
+        title = rootView.findViewById(R.id.fragment_shopping_list_title);
+        title.setText(String.format("Hello, %s", sharedPreferences.getString(getString(R.string.login_username), "")));
+
+        return rootView;
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main_menu, menu);
-        return true;
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        getActivity().getMenuInflater().inflate(R.menu.main_menu, menu);
     }
 
     @Override
@@ -108,11 +134,10 @@ public class ShoppingList extends AppCompatActivity {
     }
 
     private void _addItem() {
-        Log.i("MyActivity", "Entered Add Item");
-        AlertDialog.Builder builder = new AlertDialog.Builder(ShoppingList.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(rootView.getContext());
         builder.setTitle("Add new item");
 
-        View view = LayoutInflater.from(ShoppingList.this).inflate(R.layout.item_dialog, null, false);
+        View view = LayoutInflater.from(rootView.getContext()).inflate(R.layout.item_dialog, null, false);
         builder.setView(view);
         final EditText editText = view.findViewById(R.id.editText);
 
